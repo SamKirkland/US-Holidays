@@ -1,0 +1,265 @@
+<html>
+	<head>
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+		<script src="js/federal-holiday.1.0.0.js"></script>
+		<style>
+			html, body { font-size: 12px; font-family: sans-serif; }
+
+			table { border-collapse: collapse; text-align: center; }
+			th, td { padding: 10px; }
+
+			#tests { width: 100%; }
+			#tests tbody tr:nth-child(odd){ background-color: #f2f2f2; }
+			#tests thead th:not(:first-child) { background: #000; color: #fff; }
+			#tests td:first-child { text-align: left; }
+
+			#key { width: 425px; margin: 0 15px 15px 0; }
+			#key thead { background: #000; color: #fff; }
+			#key tbody td { height: 40px; }
+
+			.success { background-color: #cfe8d3; }
+			.success.shifted { background-color: #add7b3; }
+			.failed { background-color: #f8b5b4; }
+			.failed.shifted { background-color: #f48785;  }
+			.federal:after { float: right; content: "(Federal Holiday)"; }
+		</style>
+		<script>
+			$(document).ready(function(){
+				
+				function isUndefined(val) {
+					return typeof val === "undefined";
+				}
+
+				var allHolidays = [];
+				var startYear = 2010, endYear = 2020;
+				var allHolidays = [];
+				
+				for (var y = startYear; y <= endYear; y++) {
+					allHolidays.push(allFederalHolidaysForYear(y));
+				}
+				
+				$(".testCases tr").each(function (i, el) {
+					var holidayName = $(this).find("td").first().text().trim();
+					
+					$(this).find("td").each(function (ii, elel) {
+						if (ii != 0) {
+							var year = $(this).closest("table").find("thead tr th").eq(ii).text().trim();
+							var fullDate = $(this).text().trim(); // + "/" + year;
+							
+							// add a default year
+							if (fullDate.length < 7) {
+								fullDate += "/" + year;
+							}
+
+							var holidayResult = getHolidayByName(allHolidays[ii-1], holidayName);
+							if (!isUndefined(holidayResult) &&
+								holidayResult.dateString === fullDate) {
+								$(this).addClass("success");
+							}
+							else {
+								$(this).addClass("failed");
+							}
+
+							if (holidayResult.shifted) {
+								$(this).addClass("shifted");
+							}
+						}
+					});
+				});
+				
+				console.log(allHolidays);
+			});
+		</script>
+	</head>
+	<body>
+		<table id="key">
+			<thead>
+				<tr>
+					<th colspan="3">Test Key</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="failed">Failed</td>
+					<td class="success">Passed</td>
+					<td class="success shifted">Passed (shifted due to weekend)</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<table id="tests">
+			<thead>
+				<tr>
+					<th></th>
+					<th>2010</th>
+					<th>2011</th>
+					<th>2012</th>
+					<th>2013</th>
+					<th>2014</th>
+					<th>2015</th>
+					<th>2016</th>
+					<th>2017</th>
+					<th>2018</th>
+					<th>2019</th>
+					<th>2020</th>
+				</tr>
+			</thead>
+			<tbody class="testCases">
+				<tr>
+					<td>New Year's Day</td>
+					<td>1/1</td>
+					<td>12/31/2010</td>
+					<td>1/2</td>
+					<td>1/1</td>
+					<td>1/1</td>
+					<td>1/1</td>
+					<td>1/1</td>
+					<td>1/2</td>
+					<td>1/1</td>
+					<td>1/1</td>
+					<td>1/1</td>
+				</tr>
+				<tr>
+					<td class="federal">Martin Luther King Day</td>
+					<td>1/18</td>
+					<td>1/17</td>
+					<td>1/16</td>
+					<td>1/21</td>
+					<td>1/20</td>
+					<td>1/19</td>
+					<td>1/18</td>
+					<td>1/16</td>
+					<td>1/15</td>
+					<td>1/21</td>
+					<td>1/20</td>
+				</tr>
+				<tr>
+					<td class="federal">President's Day</td>
+					<td>2/15</td>
+					<td>2/21</td>
+					<td>2/20</td>
+					<td>2/18</td>
+					<td>2/17</td>
+					<td>2/16</td>
+					<td>2/15</td>
+					<td>2/20</td>
+					<td>2/19</td>
+					<td>2/18</td>
+					<td>2/17</td>
+				</tr>
+				<tr>
+					<td class="federal">Memorial Day</td>
+					<td>5/31</td>
+					<td>5/30</td>
+					<td>5/28</td>
+					<td>5/27</td>
+					<td>5/26</td>
+					<td>5/25</td>
+					<td>5/30</td>
+					<td>5/29</td>
+					<td>5/28</td>
+					<td>5/27</td>
+					<td>5/25</td>
+				</tr>
+				<tr>
+					<td class="federal">Independence Day</td>
+					<td>7/5</td>
+					<td>7/4</td>
+					<td>7/4</td>
+					<td>7/4</td>
+					<td>7/4</td>
+					<td>7/3</td>
+					<td>7/4</td>
+					<td>7/4</td>
+					<td>7/4</td>
+					<td>7/4</td>
+					<td>7/3</td>
+				</tr>
+				<tr>
+					<td class="federal">Labor Day</td>
+					<td>9/6</td>
+					<td>9/5</td>
+					<td>9/3</td>
+					<td>9/2</td>
+					<td>9/1</td>
+					<td>9/7</td>
+					<td>9/5</td>
+					<td>9/4</td>
+					<td>9/3</td>
+					<td>9/2</td>
+					<td>9/7</td>
+				</tr>
+				<tr>
+					<td class="federal">Columbus Day</td>
+					<td>10/11</td>
+					<td>10/10</td>
+					<td>10/8</td>
+					<td>10/14</td>
+					<td>10/13</td>
+					<td>10/12</td>
+					<td>10/10</td>
+					<td>10/9</td>
+					<td>10/8</td>
+					<td>10/14</td>
+					<td>10/12</td>
+				</tr>
+				<tr>
+					<td class="federal">Veterans Day</td>
+					<td>11/11</td>
+					<td>11/11</td>
+					<td>11/12</td>
+					<td>11/11</td>
+					<td>11/11</td>
+					<td>11/11</td>
+					<td>11/11</td>
+					<td>11/10</td>
+					<td>11/12</td>
+					<td>11/11</td>
+					<td>11/11</td>
+				</tr>
+				<tr>
+					<td class="federal">Thanksgiving Day</td>
+					<td>11/25</td>
+					<td>11/24</td>
+					<td>11/22</td>
+					<td>11/28</td>
+					<td>11/27</td>
+					<td>11/26</td>
+					<td>11/24</td>
+					<td>11/23</td>
+					<td>11/22</td>
+					<td>11/28</td>
+					<td>11/26</td>
+				</tr>
+				<tr>
+					<td class="federal">Day After Thanksgiving</td>
+					<td>11/26</td>
+					<td>11/25</td>
+					<td>11/23</td>
+					<td>11/29</td>
+					<td>11/28</td>
+					<td>11/27</td>
+					<td>11/25</td>
+					<td>11/24</td>
+					<td>11/23</td>
+					<td>11/29</td>
+					<td>11/27</td>
+				</tr>
+				<tr>
+					<td class="federal">Christmas Day</td>
+					<td>12/24</td>
+					<td>12/26</td>
+					<td>12/25</td>
+					<td>12/25</td>
+					<td>12/25</td>
+					<td>12/25</td>
+					<td>12/26</td>
+					<td>12/25</td>
+					<td>12/25</td>
+					<td>12/25</td>
+					<td>12/25</td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+</html>

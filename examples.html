@@ -1,0 +1,23 @@
+<html>
+	<head>
+		<script src="js/federal-holiday.1.0.0.js"></script>
+	</head>
+	<body>
+		<h1>View the console to see output</h1>
+		<script>
+			setTimeout(function(){ // you don't need the setTimeout in your code
+				function isUndefined(val) {
+					return typeof val === "undefined";
+				}
+
+				var yearLoop = new Date(2016, 0, 1);
+				for (var d = 0; d < 366; d++) {
+					console.log("Holiday: ", yearLoop.toLocaleDateString("en-US"), isHoliday(yearLoop));
+					yearLoop.addDays(1);
+				}
+				console.log(allFederalHolidaysForYear());
+				console.log("Holiday: ", isHoliday(new Date(2016, 10, 21)));
+			}, 0);
+		</script>
+	</body>
+</html>
